@@ -1,0 +1,168 @@
+import "strings"
+import "types"
+
+_modules = {
+	"root": {
+		"data": {},
+		"path": [],
+		"resources": {
+			"aws_iam_access_key": {
+				"test": {
+					0: {
+						"applied": {
+							"pgp_key": "keybase:Test",
+							"status":  "Active",
+							"user":    "test",
+						},
+						"destroy": false,
+						"diff": {
+							"create_date": {
+								"computed": true,
+								"new":      "",
+								"old":      "",
+							},
+							"encrypted_secret": {
+								"computed": true,
+								"new":      "",
+								"old":      "",
+							},
+							"encrypted_ses_smtp_password_v4": {
+								"computed": true,
+								"new":      "",
+								"old":      "",
+							},
+							"id": {
+								"computed": true,
+								"new":      "",
+								"old":      "",
+							},
+							"key_fingerprint": {
+								"computed": true,
+								"new":      "",
+								"old":      "",
+							},
+							"pgp_key": {
+								"computed": false,
+								"new":      "keybase:Test",
+								"old":      "",
+							},
+							"secret": {
+								"computed": true,
+								"new":      "",
+								"old":      "",
+							},
+							"ses_smtp_password_v4": {
+								"computed": true,
+								"new":      "",
+								"old":      "",
+							},
+							"status": {
+								"computed": false,
+								"new":      "Active",
+								"old":      "",
+							},
+							"user": {
+								"computed": false,
+								"new":      "test",
+								"old":      "",
+							},
+						},
+						"requires_new": false,
+					},
+				},
+			},
+			"aws_iam_user": {
+				"test": {
+					0: {
+						"applied": {
+							"force_destroy":        false,
+							"name":                 "test",
+							"path":                 "/test/",
+							"permissions_boundary": null,
+							"tags":                 null,
+						},
+						"destroy": false,
+						"diff": {
+							"arn": {
+								"computed": true,
+								"new":      "",
+								"old":      "",
+							},
+							"force_destroy": {
+								"computed": false,
+								"new":      "false",
+								"old":      "",
+							},
+							"id": {
+								"computed": true,
+								"new":      "",
+								"old":      "",
+							},
+							"name": {
+								"computed": false,
+								"new":      "test",
+								"old":      "",
+							},
+							"path": {
+								"computed": false,
+								"new":      "/test/",
+								"old":      "",
+							},
+							"permissions_boundary": {
+								"computed": false,
+								"new":      "",
+								"old":      "",
+							},
+							"tags": {
+								"computed": false,
+								"new":      "",
+								"old":      "",
+							},
+							"tags_all.%": {
+								"computed": true,
+								"new":      "",
+								"old":      "",
+							},
+							"unique_id": {
+								"computed": true,
+								"new":      "",
+								"old":      "",
+							},
+						},
+						"requires_new": false,
+					},
+				},
+			},
+		},
+	},
+}
+
+module_paths = [
+	[],
+]
+
+terraform_version = "0.12.31"
+
+variables = {}
+
+module = func(path) {
+	if types.type_of(path) is not "list" {
+		error("expected list, got", types.type_of(path))
+	}
+
+	if length(path) < 1 {
+		return _modules.root
+	}
+
+	addr = []
+	for path as p {
+		append(addr, "module")
+		append(addr, p)
+	}
+
+	return _modules[strings.join(addr, ".")]
+}
+
+data = _modules.root.data
+path = _modules.root.path
+resources = _modules.root.resources

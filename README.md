@@ -1,6 +1,6 @@
 # Hands-on-with-Hashicorp-Sentinel
 
-In this lab session, you will write and test policies that restrict resources, data sources, and modules provisioned by Terraform in AWS, Azure, and GCP. This lab uses the v2 versions of the tfplan, tfstate, and tfconfig Sentinel imports.
+In this lab session, you will write and test policies that restrict resources, data sources, and modules provisioned by Terraform in AWS. This lab uses the v2 versions of the tfplan, tfstate, and tfconfig Sentinel imports.
 
 ## Sentinel CLI installation for Linux 
 
@@ -46,3 +46,33 @@ rm sentinel_0.18.9_linux_amd64.zip
 ```
 
 For more information, visit the official [Hashicorp Installation Guide](https://docs.hashicorp.com/sentinel/intro/getting-started/install)
+
+## Exercise 1 - require-access-keys-use-pgp
+
+```
+sentinel test -verbose require-access-keys-use-pgp.sentinel
+```
+
+## Exercise 2 - enforce-mandetory-resource-tags
+
+```
+sentinel test -verbose renforce-mandetory-resource-tags.sentinel
+```
+
+## Exercise 3 - restrict-ec2-instance-type
+
+```
+sentinel test -verbose restrict-ec2-instance-type.sentinel
+```
+
+## Bonus - prevent-auto-apply-in-production
+
+```
+sentinel test -verbose prevent-auto-apply-in-production.sentinel
+```
+
+## Test the entire policy set
+
+```
+sentinel test
+```
