@@ -58,7 +58,6 @@ resource_changes = {
 				"create",
 			],
 			"after": {
-				"pgp_key": "keybase:Test",
 				"status":  "Active",
 				"user":    "test",
 			},
