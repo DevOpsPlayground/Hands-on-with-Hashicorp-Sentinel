@@ -149,8 +149,35 @@ sentinel test enforce-mandetory-resource-tags.sentinel
 Your task in this exercise is to complete and test a Sentinel policy that prevents any workspace with a name starting with "prod-" or ending in "-prod" from having the Auto Apply property set to "true".
 This policy uses the tfrun import.
 
+<br />
+
+<details>
+<summary>Click here for the solution!</summary>
+
 ```
-sentinel test -verbose prevent-auto-apply-in-production.sentinel
+validate_auto_apply = func() {
+
+  validated = true
+
+  if tfrun.workspace.name matches "^prod-(.*)" or
+     tfrun.workspace.name matches "(.*)-prod$" {
+  # if strings.has_prefix(tfrun.workspace.name, "prod-") or
+  #   strings.has_suffix(tfrun.workspace.name, "-prod") {
+    if tfrun.workspace.auto_apply is true {
+      print("The workspace", tfrun.workspace.name, "has auto_apply set to true")
+      validated = false
+    }
+  }
+
+  return validated
+}
+```
+</details>
+<br />
+
+Test your policy with the below
+```
+sentinel test prevent-auto-apply-in-production.sentinel
 ```
 
 ## Test the entire policy set

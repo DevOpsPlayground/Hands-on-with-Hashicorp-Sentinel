@@ -1,4 +1,3 @@
-# EXTRA Credit
 # prevent-auto-apply-in-production.sentinel
 # This policy uses the Sentinel tfrun import to prevent the use of auto-apply
 # in workspaces with names matching "^prod-(.*)" or "(.*)-prod$"
