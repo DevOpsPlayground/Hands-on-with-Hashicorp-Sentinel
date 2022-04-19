@@ -49,6 +49,24 @@ For more information, visit the official [Hashicorp Installation Guide](https://
 
 ## Exercise 1 - require-access-keys-use-pgp
 
+Your task in this exercise is to complete and test a Sentinel policy that requires that all AWS IAM access keys provisioned by Terraform's AWS Provider include a PGP key that starts with "keybase:".
+
+Replace `<resource_type>` with the below
+```
+aws_iam_access_key
+```
+
+Replace `<attribute>` with the below
+```
+pgp_key
+```
+
+Replace `<condition>` with the below
+```
+violations is 0
+```
+
+Now test your policy
 ```
 sentinel test -verbose require-access-keys-use-pgp.sentinel
 ```
