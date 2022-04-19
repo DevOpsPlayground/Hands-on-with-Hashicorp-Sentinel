@@ -68,19 +68,37 @@ violations is 0
 
 Now test your policy
 ```
-sentinel test -verbose require-access-keys-use-pgp.sentinel
+sentinel test require-access-keys-use-pgp.sentinel
 ```
 
-## Exercise 2 - enforce-mandetory-resource-tags
+## Exercise 2 - restrict-ec2-instance-type
+
+Your task in this exercise is to complete and test a Sentinel policy that requires that all EC2 instances have instance types from an allowed list.
+
+Replace `<list_of_allowed_types>` with the below
+```
+"t2.small", "t2.medium", "t2.large"
+```
+
+Replace `<resource_type>` with the below
+```
+aws_instance
+```
+
+Replace `<attribute>` with the below
+```
+instance_type
+```
+
+Now test your policy
+```
+sentinel test restrict-ec2-instance-type.sentinel
+```
+
+## Exercise 3 - enforce-mandetory-resource-tags
 
 ```
-sentinel test -verbose renforce-mandetory-resource-tags.sentinel
-```
-
-## Exercise 3 - restrict-ec2-instance-type
-
-```
-sentinel test -verbose restrict-ec2-instance-type.sentinel
+sentinel test -verbose enforce-mandetory-resource-tags.sentinel
 ```
 
 ## Bonus - prevent-auto-apply-in-production
