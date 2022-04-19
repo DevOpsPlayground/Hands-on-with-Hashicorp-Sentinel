@@ -97,11 +97,57 @@ sentinel test restrict-ec2-instance-type.sentinel
 
 ## Exercise 3 - enforce-mandetory-resource-tags
 
+Your task in this exercise is to complete and test a Sentinel policy that specified AWS resources have all mandatory tags.
+
+Replace `<resource_types>` with the below
 ```
-sentinel test -verbose enforce-mandetory-resource-tags.sentinel
+  "aws_s3_bucket",
+  "aws_instance",
+  "aws_vpc",
+  "aws_iam_role",
+```
+
+Replace `<mandatory_tags>` with the below
+```
+"Owner", "Purpose"
+```
+
+Replace `<custom_function>` with the below
+```
+find_resources_with_standard_tags = func(resource_types) {
+  resources = filter tfplan.resource_changes as address, rc {
+    rc.provider_name matches "(.*)aws$" and
+    rc.type in resource_types and
+  	rc.mode is "managed" and
+    (rc.change.actions contains "create" or rc.change.actions contains "update" or
+     rc.change.actions contains "read" or rc.change.actions contains "no-op")
+  }
+
+  return resources
+}
+```
+
+Replace `<attribute>` with the below
+```
+tags
+```
+
+Replace `<main_rule>` with the below
+```
+main = rule {
+  length(violatingAWSResources["messages"]) is 0
+}
+```
+
+Now test your policy
+```
+sentinel test enforce-mandetory-resource-tags.sentinel
 ```
 
 ## Bonus - prevent-auto-apply-in-production
+
+Your task in this exercise is to complete and test a Sentinel policy that prevents any workspace with a name starting with "prod-" or ending in "-prod" from having the Auto Apply property set to "true".
+This policy uses the tfrun import.
 
 ```
 sentinel test -verbose prevent-auto-apply-in-production.sentinel

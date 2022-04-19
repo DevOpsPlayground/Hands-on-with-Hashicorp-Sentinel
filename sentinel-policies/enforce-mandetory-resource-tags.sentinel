@@ -1,0 +1,36 @@
+# enforce-mandetory-resource-tags.sentinel
+# This policy require that specified AWS resources have all mandatory tags
+
+# Import common-functions/tfplan-functions/tfplan-functions.sentinel
+# with alias "plan"
+import "tfplan-functions" as plan
+import "tfplan/v2" as tfplan
+
+
+# Import aws-functions/aws-functions.sentinel
+# with alias "aws"
+# import "aws-functions" as aws
+
+# List of resources that are required to have name/value tags
+resource_types = [
+  <resource_types>
+]
+
+# List of mandatory tags
+mandatory_tags = [<mandatory_tags>]
+
+### find_resources_with_standard_tags ###
+<custom_function>
+
+# Get all AWS Resources with standard tags
+allAWSResourcesWithStandardTags =
+                          find_resources_with_standard_tags(resource_types)
+
+# Filter to AWS resources with violations
+# Warnings will be printed for all violations since the last parameter is true
+violatingAWSResources =
+        plan.filter_attribute_not_contains_list(allAWSResourcesWithStandardTags,
+                        "<attribute>", mandatory_tags, true)
+
+# Main rule
+<main_rule>
