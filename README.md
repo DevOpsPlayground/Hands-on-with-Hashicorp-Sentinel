@@ -47,6 +47,15 @@ rm sentinel_0.18.9_linux_amd64.zip
 
 For more information, visit the official [Hashicorp Installation Guide](https://docs.hashicorp.com/sentinel/intro/getting-started/install)
 
+<br>
+
+## Become Familiar with all Sentinel Documentation
+- [Main Sentinel docs](https://docs.hashicorp.com/sentinel)
+- [Terraform Enterprise docs](https://www.terraform.io/cloud-docs/sentinel)
+- [Learn Platform](https://learn.hashicorp.com/terraform?track=sentinel#sentinel)
+
+<br>
+
 ## Exercise 1 - require-access-keys-use-pgp
 
 Your task in this exercise is to complete and test a Sentinel policy that requires that all AWS IAM access keys provisioned by Terraform's AWS Provider include a PGP key that starts with "keybase:".
@@ -185,3 +194,4 @@ sentinel test prevent-auto-apply-in-production.sentinel
 ```
 sentinel test
 ```
+
