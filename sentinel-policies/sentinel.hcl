@@ -25,3 +25,7 @@ policy "restrict-ec2-instance-type" {
 policy "prevent-auto-apply-in-production" {
     enforcement_level = "hard-mandatory"
 }
+
+policy "require-modules-from-pmr" {
+    enforcement_level = "soft-mandatory"
+}

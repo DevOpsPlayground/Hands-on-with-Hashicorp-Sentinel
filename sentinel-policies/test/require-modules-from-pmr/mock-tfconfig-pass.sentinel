@@ -1,0 +1,516 @@
+import "strings"
+
+providers = {
+	"aws": {
+		"alias": "",
+		"config": {
+			"region": {
+				"constant_value": "eu-west-1",
+			},
+		},
+		"module_address":      "",
+		"name":                "aws",
+		"provider_config_key": "aws",
+		"version_constraint":  "~> 4.0",
+	},
+}
+
+resources = {
+	"module.module-vpc.aws_eip.application_eip": {
+		"address": "module.module-vpc.aws_eip.application_eip",
+		"config": {
+			"vpc": {
+				"constant_value": true,
+			},
+		},
+		"count": {
+			"references": [
+				"var.application_private_subnets_ip_lists",
+			],
+		},
+		"depends_on":          [],
+		"for_each":            {},
+		"mode":                "managed",
+		"module_address":      "module.module-vpc",
+		"name":                "application_eip",
+		"provider_config_key": "module.module-vpc:aws",
+		"provisioners":        [],
+		"type":                "aws_eip",
+	},
+	"module.module-vpc.aws_internet_gateway.application_igw": {
+		"address": "module.module-vpc.aws_internet_gateway.application_igw",
+		"config": {
+			"vpc_id": {
+				"references": [
+					"aws_vpc.application_vpc.id",
+					"aws_vpc.application_vpc",
+				],
+			},
+		},
+		"count":               {},
+		"depends_on":          [],
+		"for_each":            {},
+		"mode":                "managed",
+		"module_address":      "module.module-vpc",
+		"name":                "application_igw",
+		"provider_config_key": "module.module-vpc:aws",
+		"provisioners":        [],
+		"type":                "aws_internet_gateway",
+	},
+	"module.module-vpc.aws_nat_gateway.application_natgw": {
+		"address": "module.module-vpc.aws_nat_gateway.application_natgw",
+		"config": {
+			"allocation_id": {
+				"references": [
+					"aws_eip.application_eip",
+					"count.index",
+				],
+			},
+			"subnet_id": {
+				"references": [
+					"aws_subnet.application_public_subnets",
+					"count.index",
+				],
+			},
+		},
+		"count": {
+			"references": [
+				"var.application_public_subnets_ip_lists",
+			],
+		},
+		"depends_on":          [],
+		"for_each":            {},
+		"mode":                "managed",
+		"module_address":      "module.module-vpc",
+		"name":                "application_natgw",
+		"provider_config_key": "module.module-vpc:aws",
+		"provisioners":        [],
+		"type":                "aws_nat_gateway",
+	},
+	"module.module-vpc.aws_route.application_private_route": {
+		"address": "module.module-vpc.aws_route.application_private_route",
+		"config": {
+			"destination_cidr_block": {
+				"constant_value": "0.0.0.0/0",
+			},
+			"nat_gateway_id": {
+				"references": [
+					"aws_nat_gateway.application_natgw",
+					"count.index",
+				],
+			},
+			"route_table_id": {
+				"references": [
+					"aws_route_table.application_private_route_table",
+					"count.index",
+				],
+			},
+			"timeouts": {
+				"constant_value": null,
+			},
+		},
+		"count": {
+			"references": [
+				"var.application_private_subnets_ip_lists",
+			],
+		},
+		"depends_on":          [],
+		"for_each":            {},
+		"mode":                "managed",
+		"module_address":      "module.module-vpc",
+		"name":                "application_private_route",
+		"provider_config_key": "module.module-vpc:aws",
+		"provisioners":        [],
+		"type":                "aws_route",
+	},
+	"module.module-vpc.aws_route.application_public_route": {
+		"address": "module.module-vpc.aws_route.application_public_route",
+		"config": {
+			"destination_cidr_block": {
+				"constant_value": "0.0.0.0/0",
+			},
+			"gateway_id": {
+				"references": [
+					"aws_internet_gateway.application_igw.id",
+					"aws_internet_gateway.application_igw",
+				],
+			},
+			"route_table_id": {
+				"references": [
+					"aws_route_table.application_public_route_table.id",
+					"aws_route_table.application_public_route_table",
+				],
+			},
+			"timeouts": {
+				"constant_value": null,
+			},
+		},
+		"count":               {},
+		"depends_on":          [],
+		"for_each":            {},
+		"mode":                "managed",
+		"module_address":      "module.module-vpc",
+		"name":                "application_public_route",
+		"provider_config_key": "module.module-vpc:aws",
+		"provisioners":        [],
+		"type":                "aws_route",
+	},
+	"module.module-vpc.aws_route_table.application_private_route_table": {
+		"address": "module.module-vpc.aws_route_table.application_private_route_table",
+		"config": {
+			"vpc_id": {
+				"references": [
+					"aws_vpc.application_vpc.id",
+					"aws_vpc.application_vpc",
+				],
+			},
+		},
+		"count": {
+			"references": [
+				"var.application_private_subnets_ip_lists",
+			],
+		},
+		"depends_on":          [],
+		"for_each":            {},
+		"mode":                "managed",
+		"module_address":      "module.module-vpc",
+		"name":                "application_private_route_table",
+		"provider_config_key": "module.module-vpc:aws",
+		"provisioners":        [],
+		"type":                "aws_route_table",
+	},
+	"module.module-vpc.aws_route_table.application_public_route_table": {
+		"address": "module.module-vpc.aws_route_table.application_public_route_table",
+		"config": {
+			"vpc_id": {
+				"references": [
+					"aws_vpc.application_vpc.id",
+					"aws_vpc.application_vpc",
+				],
+			},
+		},
+		"count":               {},
+		"depends_on":          [],
+		"for_each":            {},
+		"mode":                "managed",
+		"module_address":      "module.module-vpc",
+		"name":                "application_public_route_table",
+		"provider_config_key": "module.module-vpc:aws",
+		"provisioners":        [],
+		"type":                "aws_route_table",
+	},
+	"module.module-vpc.aws_route_table_association.application_private_route_assoication": {
+		"address": "module.module-vpc.aws_route_table_association.application_private_route_assoication",
+		"config": {
+			"route_table_id": {
+				"references": [
+					"aws_route_table.application_private_route_table",
+					"count.index",
+				],
+			},
+			"subnet_id": {
+				"references": [
+					"aws_subnet.application_private_subnets",
+					"count.index",
+				],
+			},
+		},
+		"count": {
+			"references": [
+				"var.application_private_subnets_ip_lists",
+			],
+		},
+		"depends_on":          [],
+		"for_each":            {},
+		"mode":                "managed",
+		"module_address":      "module.module-vpc",
+		"name":                "application_private_route_assoication",
+		"provider_config_key": "module.module-vpc:aws",
+		"provisioners":        [],
+		"type":                "aws_route_table_association",
+	},
+	"module.module-vpc.aws_route_table_association.application_public_route_assoication": {
+		"address": "module.module-vpc.aws_route_table_association.application_public_route_assoication",
+		"config": {
+			"route_table_id": {
+				"references": [
+					"aws_route_table.application_public_route_table.id",
+					"aws_route_table.application_public_route_table",
+				],
+			},
+			"subnet_id": {
+				"references": [
+					"aws_subnet.application_public_subnets",
+					"count.index",
+				],
+			},
+		},
+		"count": {
+			"references": [
+				"var.application_public_subnets_ip_lists",
+			],
+		},
+		"depends_on":          [],
+		"for_each":            {},
+		"mode":                "managed",
+		"module_address":      "module.module-vpc",
+		"name":                "application_public_route_assoication",
+		"provider_config_key": "module.module-vpc:aws",
+		"provisioners":        [],
+		"type":                "aws_route_table_association",
+	},
+	"module.module-vpc.aws_subnet.application_private_subnets": {
+		"address": "module.module-vpc.aws_subnet.application_private_subnets",
+		"config": {
+			"availability_zone": {
+				"references": [
+					"data.aws_availability_zones.application_nodes_azs.names",
+					"data.aws_availability_zones.application_nodes_azs",
+					"count.index",
+				],
+			},
+			"cidr_block": {
+				"references": [
+					"var.application_private_subnets_ip_lists",
+					"count.index",
+				],
+			},
+			"tags": {
+				"references": [
+					"var.application_name",
+					"data.aws_availability_zones.application_nodes_azs.names",
+					"data.aws_availability_zones.application_nodes_azs",
+					"count.index",
+				],
+			},
+			"vpc_id": {
+				"references": [
+					"aws_vpc.application_vpc.id",
+					"aws_vpc.application_vpc",
+				],
+			},
+		},
+		"count": {
+			"references": [
+				"var.application_private_subnets_ip_lists",
+			],
+		},
+		"depends_on":          [],
+		"for_each":            {},
+		"mode":                "managed",
+		"module_address":      "module.module-vpc",
+		"name":                "application_private_subnets",
+		"provider_config_key": "module.module-vpc:aws",
+		"provisioners":        [],
+		"type":                "aws_subnet",
+	},
+	"module.module-vpc.aws_subnet.application_public_subnets": {
+		"address": "module.module-vpc.aws_subnet.application_public_subnets",
+		"config": {
+			"availability_zone": {
+				"references": [
+					"data.aws_availability_zones.application_nodes_azs.names",
+					"data.aws_availability_zones.application_nodes_azs",
+					"count.index",
+				],
+			},
+			"cidr_block": {
+				"references": [
+					"var.application_public_subnets_ip_lists",
+					"count.index",
+				],
+			},
+			"tags": {
+				"references": [
+					"var.application_name",
+					"data.aws_availability_zones.application_nodes_azs.names",
+					"data.aws_availability_zones.application_nodes_azs",
+					"count.index",
+				],
+			},
+			"vpc_id": {
+				"references": [
+					"aws_vpc.application_vpc.id",
+					"aws_vpc.application_vpc",
+				],
+			},
+		},
+		"count": {
+			"references": [
+				"var.application_public_subnets_ip_lists",
+			],
+		},
+		"depends_on":          [],
+		"for_each":            {},
+		"mode":                "managed",
+		"module_address":      "module.module-vpc",
+		"name":                "application_public_subnets",
+		"provider_config_key": "module.module-vpc:aws",
+		"provisioners":        [],
+		"type":                "aws_subnet",
+	},
+	"module.module-vpc.aws_vpc.application_vpc": {
+		"address": "module.module-vpc.aws_vpc.application_vpc",
+		"config": {
+			"cidr_block": {
+				"references": [
+					"var.application_vpc_block",
+				],
+			},
+			"enable_dns_hostnames": {
+				"constant_value": true,
+			},
+			"tags": {
+				"references": [
+					"var.application_name",
+				],
+			},
+		},
+		"count":               {},
+		"depends_on":          [],
+		"for_each":            {},
+		"mode":                "managed",
+		"module_address":      "module.module-vpc",
+		"name":                "application_vpc",
+		"provider_config_key": "module.module-vpc:aws",
+		"provisioners":        [],
+		"type":                "aws_vpc",
+	},
+	"module.module-vpc.data.aws_availability_zones.application_nodes_azs": {
+		"address":             "module.module-vpc.data.aws_availability_zones.application_nodes_azs",
+		"config":              {},
+		"count":               {},
+		"depends_on":          [],
+		"for_each":            {},
+		"mode":                "data",
+		"module_address":      "module.module-vpc",
+		"name":                "application_nodes_azs",
+		"provider_config_key": "module.module-vpc:aws",
+		"provisioners":        [],
+		"type":                "aws_availability_zones",
+	},
+}
+
+provisioners = {}
+
+variables = {
+	"module.module-vpc:application_name": {
+		"default":        null,
+		"description":    "",
+		"module_address": "module.module-vpc",
+		"name":           "application_name",
+	},
+	"module.module-vpc:application_private_subnets_ip_lists": {
+		"default":        null,
+		"description":    "",
+		"module_address": "module.module-vpc",
+		"name":           "application_private_subnets_ip_lists",
+	},
+	"module.module-vpc:application_public_subnets_ip_lists": {
+		"default":        null,
+		"description":    "",
+		"module_address": "module.module-vpc",
+		"name":           "application_public_subnets_ip_lists",
+	},
+	"module.module-vpc:application_vpc_block": {
+		"default":        null,
+		"description":    "",
+		"module_address": "module.module-vpc",
+		"name":           "application_vpc_block",
+	},
+}
+
+outputs = {
+	"module.module-vpc:application_eip": {
+		"depends_on":     [],
+		"description":    "",
+		"module_address": "module.module-vpc",
+		"name":           "application_eip",
+		"sensitive":      false,
+		"value": {
+			"references": [
+				"aws_eip.application_eip",
+			],
+		},
+	},
+	"module.module-vpc:application_private_subnets": {
+		"depends_on":     [],
+		"description":    "",
+		"module_address": "module.module-vpc",
+		"name":           "application_private_subnets",
+		"sensitive":      false,
+		"value": {
+			"references": [
+				"aws_subnet.application_private_subnets",
+			],
+		},
+	},
+	"module.module-vpc:application_public_subnets": {
+		"depends_on":     [],
+		"description":    "",
+		"module_address": "module.module-vpc",
+		"name":           "application_public_subnets",
+		"sensitive":      false,
+		"value": {
+			"references": [
+				"aws_subnet.application_public_subnets",
+			],
+		},
+	},
+	"module.module-vpc:application_vpc": {
+		"depends_on":     [],
+		"description":    "",
+		"module_address": "module.module-vpc",
+		"name":           "application_vpc",
+		"sensitive":      false,
+		"value": {
+			"references": [
+				"aws_vpc.application_vpc.id",
+				"aws_vpc.application_vpc",
+			],
+		},
+	},
+}
+
+module_calls = {
+	"module-vpc": {
+		"config": {
+			"application_name": {
+				"constant_value": "DevOps Playground",
+			},
+			"application_private_subnets_ip_lists": {
+				"constant_value": [
+					"10.40.64.0/20",
+					"10.40.80.0/20",
+					"10.40.96.0/20",
+				],
+			},
+			"application_public_subnets_ip_lists": {
+				"constant_value": [
+					"10.40.0.0/20",
+					"10.40.16.0/20",
+					"10.40.32.0/20",
+				],
+			},
+			"application_vpc_block": {
+				"constant_value": "10.40.0.0/17",
+			},
+		},
+		"count":              {},
+		"depends_on":         [],
+		"for_each":           {},
+		"module_address":     "",
+		"name":               "module-vpc",
+		"source":             "app.terraform.io/wale-play-ground/module-vpc/aws",
+		"version_constraint": "0.0.1",
+	},
+}
+
+strip_index = func(addr) {
+	s = strings.split(addr, ".")
+	for s as i, v {
+		s[i] = strings.split(v, "[")[0]
+	}
+
+	return strings.join(s, ".")
+}
